@@ -1,0 +1,12 @@
+server:
+  port: 8081
+
+spring:
+  application:
+    name: spring-boot-pulsar
+  pulsar:
+    client:
+      service-url: pulsar://127.0.0.1:6650
+      auth-plugin-class-name: org.apache.pulsar.client.impl.auth.AuthenticationToken
+      authentication:
+        token: {YOU_PULSAR_TOKEN}
