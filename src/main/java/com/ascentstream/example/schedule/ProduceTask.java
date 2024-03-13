@@ -53,7 +53,7 @@ public class ProduceTask {
         Person person1 = Person.of().setAge(20).setName("李四").setCity("上海");
         MessageId id4 = personProducer.sendMessageWithProducerCustomizer(PERSON_TOPIC,person1,5,TimeUnit.SECONDS,
                 BatcherBuilder.KEY_BASED);
-        System.out.println("Send person message with producer customizer success, value : " + person + " , messageId : " + id4);
+        System.out.println("Send person message with producer customizer success, value : " + person1 + " , messageId : " + id4);
 
         /**
          * unack场景消息发送
@@ -65,10 +65,9 @@ public class ProduceTask {
         /**
          * batchReceive场景消息发送
          */
-        String str3 = "[hello_batch_message_"+ currentTimeMillis+"]";
-        for (int i = 0; i < 10; i++) {
-            MessageId id = stringProducer.sendMessage(BATCH_MESSAGE_TOPIC,str3.getBytes(StandardCharsets.UTF_8));
-            System.out.println("messageID : " + id);
+        for (int i = 0; i < 100; i++) {
+            String str3 = "[hello_batch_message_"+ i +"]";
+            stringProducer.sendMessageAsync(BATCH_MESSAGE_TOPIC,str3.getBytes(StandardCharsets.UTF_8));
         }
 
         /**

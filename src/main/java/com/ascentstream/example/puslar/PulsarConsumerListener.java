@@ -1,6 +1,7 @@
 package com.ascentstream.example.puslar;
 
 import com.ascentstream.example.bean.Person;
+import org.apache.pulsar.client.api.Consumer;
 import org.apache.pulsar.client.api.Message;
 import org.apache.pulsar.client.api.Messages;
 import org.apache.pulsar.client.api.SubscriptionType;
@@ -8,6 +9,7 @@ import org.apache.pulsar.common.schema.SchemaType;
 import org.springframework.pulsar.annotation.PulsarListener;
 import static com.ascentstream.example.constant.Constants.*;
 import static java.lang.Thread.sleep;
+import org.springframework.pulsar.listener.AckMode;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -53,14 +55,15 @@ public class PulsarConsumerListener {
             subscriptionName = "sub-test",
             topics = UN_ACK_TOPIC,
             subscriptionType = SubscriptionType.Shared,
+            ackMode = AckMode.BATCH,
             properties = {"ackTimeoutMillis=2000"}
     )
-    public void unAckTopicListener(Message<byte[]> message) throws InterruptedException {
+    public void unAckTopicListener(Message<byte[]> message, Consumer<byte[]> consumer) throws InterruptedException {
         /**
-         * 如果消息处理逻辑耗时过长超过了ackTimeoutMillis设置的时间活着手动触发unack，会进行重新投递。
-         * PulsarListener支持properties参数拓展ConsumerConfigurationData支持所有的配置
+         * 如果消息处理逻辑耗时过长超过了ackTimeoutMillis设置的时间或者手动触发unack，会进行重新投递。
          */
         System.out.println("Received byte message: " + new String(message.getValue()) + ", produce name : " + message.getProducerName());
+        //consumer.negativeAcknowledge(message);
         sleep(5000);
     }
 
@@ -69,7 +72,8 @@ public class PulsarConsumerListener {
             subscriptionName = "sub-test",
             topics = BATCH_MESSAGE_TOPIC,
             subscriptionType = SubscriptionType.Shared,
-            batch = true
+            batch = true,
+            consumerCustomizer = "batchReceivePolicyCustomizer"
     )
     public void batchTopicListener(Messages<byte[]> messages) {
         /**

@@ -31,7 +31,14 @@ public class PulsarProducer<T> {
          */
         return this.pulsarTemplate.newMessage(message).withTopic(topic)
                 .withMessageCustomizer(m -> {
-                    m.deliverAfter(delay,unit).disableReplication();
+                    //m.deliverAfter(delay,unit).disableReplication();
+                }).send();
+    }
+
+    public MessageId sendDelayMessage(String topic, T message, long timestamp) throws PulsarClientException {
+        return this.pulsarTemplate.newMessage(message).withTopic(topic)
+                .withMessageCustomizer(m -> {
+                    m.deliverAt(timestamp);
                 }).send();
     }
 
