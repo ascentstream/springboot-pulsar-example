@@ -1,5 +1,5 @@
 # springboot pulsar集成示例
-Pulsar examples. 该仓库提供了Apache Pulsar的Quick Start.
+Springboot Pulsar examples. 该仓库提供了Apache Pulsar与SpringBoot集成的Quick Start.
 
 ## 项目结构
 - `common-dependency`, 公共依赖, 如工具类等
